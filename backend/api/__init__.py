@@ -9,6 +9,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_mongoengine import MongoEngine
 
 from api.core import all_exception_handler
 
@@ -17,12 +18,15 @@ import rq
 
 from logging.handlers import RotatingFileHandler
 
-
+db = MongoEngine()
 migrate = Migrate()
 jwt = JWTManager()
 cors = CORS()
 limiter = Limiter(
-    key_func=get_remote_address, default_limits=["200 per day", "50 per hour"]
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri=os.environ.get("REDIS_URL") or "redis://",
+    strategy="fixed-window",
 )
 
 # why we use application factories http://flask.pocoo.org/docs/1.0/patterns/appfactories/#app-factories
@@ -43,8 +47,6 @@ def create_app(config_class=Config):
     app.task_queue = rq.Queue("flask-api-queue", connection=app.redis)
 
     with app.app_context():
-        from api.models import db
-
         db.init_app(app)
         migrate.init_app(app, db, compare_type=True)
 
