@@ -1,5 +1,4 @@
 # from api.core import Mixin
-from .base import db
 from flask_mongoengine import Document
 from mongoengine import StringField
 

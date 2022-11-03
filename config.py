@@ -21,7 +21,8 @@ class Config(object):
     password = os.environ.get("MONGO_PASSWORD")
     db = os.environ.get("MONGO_DB")
     host = os.environ.get("MONGO_HOST")
-    MONGODB_SETTINGS = {"db": db, "host": host % (user, password, db)}
+    MONGODB_URI = host % (user, password, db)
+    MONGODB_SETTINGS = {"db": db, "host": MONGODB_URI}
 
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
     JWT_BLACKLIST_ENABLED = True
