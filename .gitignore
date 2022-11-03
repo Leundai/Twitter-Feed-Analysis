@@ -72,6 +72,12 @@ typings/
 .env
 .env.test
 
+# virutal env
+.venv
+
+# TODO: Remove this after done
+oldBackend
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 

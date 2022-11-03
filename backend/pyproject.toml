@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "ling506-backend"
+version = "0.1.0"
+description = "Twitter Analysis API"
+authors = ["leundai"]
+readme = "README.md"
+packages = [{include = "api"}]
+
+[tool.poetry.scripts]
+start = "scripts:runserver"
+start-prod = "scripts:runprod"
+startworker = "scripts:runworker"
+format = "scripts:format"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+flask-cors = "^3.0.10"
+redis = "^4.3.4"
+flask = "^2.2.2"
+flask-migrate = "^3.1.0"
+flask-jwt-extended = "^4.4.4"
+flask-limiter = "^2.7.0"
+flask-mongoengine = "^1.0.0"
+config = "^0.5.1"
+rq = "^1.11.1"
+python-dotenv = "^0.21.0"
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^2.15.5"
+black = "^22.10.0"
+mypy = "^0.982"
+pytest = "^7.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
