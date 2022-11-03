@@ -32,7 +32,7 @@ $ poetry install
 To run the server:
 
 ```
-$ poetry run start
+$ poetry run flask run
 ```
 
 ### Verifying

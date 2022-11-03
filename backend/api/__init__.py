@@ -35,10 +35,12 @@ def create_app(config_class=Config):
     The flask application factory. To run the app somewhere else you can:
     ```
     from api import create_app
+
     app = create_app()
 
-    if __main__ == "__name__":
+    if __name__ == "__main__":
         app.run()
+    ```
     """
 
     app = Flask(__name__)
