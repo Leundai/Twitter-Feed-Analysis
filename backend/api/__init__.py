@@ -57,14 +57,12 @@ def create_app(config_class=Config):
         limiter.init_app(app)
 
     # import and register blueprints
-    from api.views import (
-        app_blueprint,
-        main,
-    )
+    from api.views.main import bp as main_bp
+    from api.views.app_blueprint import bp as app_blueprint_bp
 
     # why blueprints http://flask.pocoo.org/docs/1.0/blueprints/
-    app.register_blueprint(app_blueprint.app_blueprint)
-    app.register_blueprint(main.main, url_prefix="/api")
+    app.register_blueprint(app_blueprint_bp)
+    app.register_blueprint(main_bp, url_prefix="/api")
 
     # Set the rate limit for all routes in the auth_bp blueprint to 1 per second
     # Example: limiter.limit("60 per minute")(main.main)
