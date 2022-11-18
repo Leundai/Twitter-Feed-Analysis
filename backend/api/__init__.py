@@ -1,8 +1,8 @@
 import os
 import logging
-from config import Config
+from config_flask import Config
 
-from flask import Flask, request
+from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -25,7 +25,7 @@ cors = CORS()
 limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200 per day", "50 per hour"],
-    storage_uri=os.environ.get("REDIS_URL") or "redis://",
+    storage_uri=os.environ.get("REDIS_URL"),
     strategy="fixed-window",
 )
 
@@ -45,7 +45,7 @@ def create_app(config_class=Config):
 
     app = Flask(__name__)
     app.config.from_object(config_class)
-    app.redis = Redis.from_url(app.config["REDIS_URL"])
+    app.redis = Redis.from_url(app.config.get("REDIS_URL", "redis://"))
     app.task_queue = rq.Queue("flask-api-queue", connection=app.redis)
 
     with app.app_context():

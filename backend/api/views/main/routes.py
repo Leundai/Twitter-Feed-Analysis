@@ -14,16 +14,13 @@ def get_secret():
 
 @bp.route("/analyze", methods=["GET"])
 def start_analyzing():
-    logger.info("About to create new profile")
     new_profile = TaskProfile()
-    logger.info("About to queue this into Redis Queue")
     rq_job = current_app.task_queue.enqueue(
-        "api.tasks.analyze_profile.count_seconds", 15
+        "api.tasks.analyze_profile.count_seconds", 2
     )
     new_profile.task_id = rq_job.get_id()
-    logger.info("About to save this into mongodb")
+    logger.info(new_profile.task_id)
     new_profile.save()
-    logger.info("Successfully saved this")
 
     return create_response(data={"request_id": rq_job.get_id()})
 
@@ -38,9 +35,19 @@ def get_analysis_status():
         return create_response(status=400, message="Missing task id/invalid task_id")
 
     try:
-        task = TaskProfile.objects.get(task_id=task_id)
+        task: TaskProfile = TaskProfile.objects.get(task_id=task_id)
     except Exception as e:
         logger.error(e)
-        return create_response(status=500, message="Failed to get task")
+        return create_response(status=500, message="Task doesn't exist or has expired")
 
-    return create_response(data={"progress": task.get_progress()})
+    task_progress = task.get_progress()
+    logger.info(task_progress)
+    if task_progress is None:
+        return create_response(status=500, message="Task has expired")
+    elif task_progress >= 100:
+        logger.info("calling task result")
+        task_result = task.get_result()
+        logger.info(task_result)
+        task.delete()
+        return create_response(data={"progress": task_progress, "result": task_result})
+    return create_response(data={"progress": task_progress})

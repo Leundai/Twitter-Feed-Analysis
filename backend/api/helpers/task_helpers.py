@@ -1,5 +1,4 @@
 from rq import get_current_job
-from api import db
 from api.models import TaskProfile
 from api.core import logger
 
@@ -18,11 +17,15 @@ def _set_task_progress(progress: int) -> None:
 
         job.meta["progress"] = progress
         job.save_meta()
+        logger.info(progress)
 
         if progress >= 100:
             try:
                 task = TaskProfile.objects.get(task_id=job.get_id())
+                if task.complete:
+                    return
                 task.complete = True
                 task.save()
+                logger.info(f"Finished Task {job.get_id()}")
             except Exception as e:
                 logger.error(e)
