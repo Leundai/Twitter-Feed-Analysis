@@ -1,6 +1,7 @@
-from datetime import time
+import time
 from api import create_app
 from api.helpers.task_helpers import _set_task_progress
+from api.core import logger
 import sys
 
 # Create the app in order to operate within the context of the app
@@ -12,7 +13,7 @@ def count_seconds(seconds: int) -> None:
     A background task which counts up to the number of seconds passed as an argument
     """
     with app.app_context():
-        app.logger.info("Running task count seconds")
+        logger.info("Running task count seconds")
         try:
             number = seconds
             _set_task_progress(0)
@@ -25,7 +26,7 @@ def count_seconds(seconds: int) -> None:
                 _set_task_progress(100 * i // number)
 
         except:
-            app.logger.error("Unhandled exception", exc_info=sys.exc_info())
+            logger.error("Unhandled exception", exc_info=sys.exc_info())
 
         finally:
             _set_task_progress(100)
