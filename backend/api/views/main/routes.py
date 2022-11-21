@@ -4,13 +4,6 @@ from api.views.main import bp
 from api.core import create_response, logger
 from api.models import TaskProfile
 
-# GET request for /accounts/<type>
-@bp.route("/secret", methods=["GET"])
-def get_secret():
-
-    logger.info("Getting Secret")
-    return create_response(data={"secret": "Hello"})
-
 
 @bp.route("/analyze", methods=["GET"])
 def start_analyzing():
@@ -30,7 +23,7 @@ def get_analysis_status():
     req_body = request.json
     task_id = req_body.get("task_id", None)
 
-    # TODO: Add data checkers here
+    # TODO: Add validators here
     if task_id is None or not task_id:
         return create_response(status=400, message="Missing task id/invalid task_id")
 
@@ -41,7 +34,6 @@ def get_analysis_status():
         return create_response(status=500, message="Task doesn't exist or has expired")
 
     task_progress = task.get_progress()
-    logger.info(task_progress)
     if task_progress is None:
         return create_response(status=500, message="Task has expired")
     elif task_progress >= 100:
