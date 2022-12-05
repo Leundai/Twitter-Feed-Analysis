@@ -1,8 +1,9 @@
 import time
-from api import create_app
+from api import create_app, emotion_classifier
 from api.helpers.task_helpers import _set_task_progress
 from api.core import logger
 import sys
+from tweepy import Client
 
 # Create the app in order to operate within the context of the app
 app = create_app()
@@ -12,7 +13,14 @@ def analyze_profile() -> None:
     """
     A background task that uses Twitter API and runs emotion detection on all collected tweets
     """
-    pass
+    with app.app_context():
+        client: Client = app.config["TWITTER_CLIENT"]
+        res = client.get_me()
+        user = res.data
+        logger.info(user.id)
+        logger.info(len(client.get_users_followers(user.id).data))
+
+        print(emotion_classifier("Oh wow. I didn't know that."))
 
 
 # def count_seconds(seconds: int) -> None:

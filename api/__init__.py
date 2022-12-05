@@ -15,6 +15,7 @@ from api.core import all_exception_handler
 
 from redis import Redis
 import rq
+import tweepy
 
 from logging.handlers import RotatingFileHandler
 
@@ -28,6 +29,15 @@ limiter = Limiter(
     storage_uri=os.environ.get("REDIS_URL"),
     strategy="fixed-window",
 )
+
+from transformers import pipeline
+
+emotion_classifier = pipeline(
+    "text-classification",
+    model="j-hartmann/emotion-english-distilroberta-base",
+    top_k=None,
+)
+
 
 # why we use application factories http://flask.pocoo.org/docs/1.0/patterns/appfactories/#app-factories
 def create_app(config_class=Config):
@@ -55,6 +65,16 @@ def create_app(config_class=Config):
         jwt.init_app(app)
         cors.init_app(app)
         limiter.init_app(app)
+
+        # Setup Twitter API
+        twitter_auth = {
+            "bearer_token": app.config.get("TWITTER_BEARER"),
+            "consumer_key": app.config.get("TWITTER_API_KEY"),
+            "consumer_secret": app.config.get("TWITTER_API_SECRET"),
+            "access_token": app.config.get("TWITTER_ACCESS_TOKEN"),
+            "access_token_secret": app.config.get("TWITTER_ACCESS_SECRET"),
+        }
+        app.config["TWITTER_CLIENT"] = tweepy.Client(**twitter_auth)
 
     # import and register blueprints
     from api.views.main import bp as main_bp
