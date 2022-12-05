@@ -29,3 +29,9 @@ class Config(object):
     JWT_BLACKLIST_TOKEN_CHECKS = ["access", "refresh"]
 
     REDIS_URL = os.environ.get("REDIS_URL") or "redis://"
+
+    TWITTER_API_KEY = os.environ.get("TWITTER_API_KEY")
+    TWITTER_API_SECRET = os.environ.get("TWITTER_API_SECRET")
+    TWITTER_ACCESS_TOKEN = os.environ.get("TWITTER_ACCESS_TOKEN")
+    TWITTER_ACCESS_SECRET = os.environ.get("TWITTER_ACCESS_SECRET")
+    TWITTER_BEARER = os.environ.get("TWITTER_BEARER")

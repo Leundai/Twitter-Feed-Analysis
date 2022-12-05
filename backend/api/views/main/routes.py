@@ -9,7 +9,7 @@ from api.models import TaskProfile
 def start_analyzing():
     new_profile = TaskProfile()
     rq_job = current_app.task_queue.enqueue(
-        "api.tasks.analyze_profile.count_seconds", 2
+        "api.tasks.twitter_analysis.analyze_profile.analyze_profile"
     )
     new_profile.task_id = rq_job.get_id()
     logger.info(new_profile.task_id)
