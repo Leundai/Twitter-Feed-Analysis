@@ -91,7 +91,7 @@ def analyze_profile() -> None:
 
         prediction_results = pd.DataFrame()
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = []
 
             tweet_len = len(tweet_list)
