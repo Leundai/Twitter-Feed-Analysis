@@ -42,7 +42,10 @@ class TaskProfile(Document):
         :returns None if expired or does not exist
         """
         job = self.get_rq_job()
-        return None if job is None else job.result
+
+        if job is None:
+            return job
+        return job.meta.get("result", None)
 
     def __repr__(self):
         return f"""<TaskProfile {self.task_id} {self.name} {self.complete}>"""

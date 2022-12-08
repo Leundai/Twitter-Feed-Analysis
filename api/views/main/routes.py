@@ -1,8 +1,10 @@
 from uuid import uuid4
 from flask import current_app, request
 from api.views.main import bp
+from api.utils.scripts import NpEncoder
 from api.core import create_response, logger
 from api.models import TaskProfile
+import json
 
 
 @bp.route("/analyze", methods=["GET"])
@@ -39,7 +41,13 @@ def get_analysis_status():
     elif task_progress >= 100:
         logger.info("calling task result")
         task_result = task.get_result()
-        logger.info(task_result)
         task.delete()
-        return create_response(data={"progress": task_progress, "result": task_result})
+
+        # Convert any missing np.dtypes to primitive types
+        json_dump = json.dumps(task_result, cls=NpEncoder)
+        converted_data = json.loads(json_dump)
+
+        return create_response(
+            data={"progress": task_progress, "result": converted_data}
+        )
     return create_response(data={"progress": task_progress})
