@@ -6,7 +6,8 @@ from api.core import create_response, logger
 from api.models import TaskProfile
 import json
 
-
+# TODO: customize this to be to a specific user id
+# with oauth
 @bp.route("/analyze", methods=["GET"])
 def start_analyzing():
     new_profile = TaskProfile()
