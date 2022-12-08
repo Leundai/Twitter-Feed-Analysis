@@ -3,7 +3,7 @@ from api.models import TaskProfile
 from api.core import logger
 
 
-def _set_task_progress(progress: int) -> None:
+def _set_task_progress(progress: int, data_result=None) -> None:
     """
     A helper function which updates the progress status of a background task
 
@@ -26,6 +26,9 @@ def _set_task_progress(progress: int) -> None:
                     return
                 task.complete = True
                 task.save()
+
+                job.meta["result"] = data_result
+                job.save_meta()
                 logger.info(f"Finished Task {job.get_id()}")
             except Exception as e:
                 logger.error(e)
