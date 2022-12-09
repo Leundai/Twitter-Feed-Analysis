@@ -20,6 +20,7 @@ function AuthPage() {
           variant="outlined"
           color="info"
           startIcon={<TwitterIcon />}
+          onClick={() => navigate("/loading")}
         >
           Login with twitter
         </Button>

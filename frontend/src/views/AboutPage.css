@@ -1,5 +1,4 @@
 .about-container {
-  max-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,6 +12,6 @@
 }
 
 .homepage-button {
-  margin-top: 1.5em;
-  margin-left: 1.5em;
+  margin-top: 1em !important;
+  margin-left: 1em !important;
 }
