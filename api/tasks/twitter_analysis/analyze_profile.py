@@ -58,7 +58,8 @@ def analyze_profile() -> None:
         logger.info(f"Twitter User ID: {user.id}")
 
         current_time = datetime.now()
-        tweet_list = []
+        tweet_list = list()
+        author_dict = dict()
 
         # TODO: Put this more specific to a local timezone to be more accurate of a day activity
         for _ in range(28):
@@ -66,6 +67,7 @@ def analyze_profile() -> None:
             current_timeline = twitter_client.get_home_timeline(
                 expansions=["author_id"],
                 tweet_fields=["created_at"],
+                user_fields=["username", "name"],
                 start_time=prev_hour_time,
                 end_time=current_time,
             )
@@ -86,6 +88,16 @@ def analyze_profile() -> None:
                     if remove_urls(tweet.text) != ""
                 ]
             )
+
+            current_authors = current_timeline.includes.get("users", [])
+            current_authors = [author.data for author in current_authors]
+            for author in current_authors:
+                author_id = author["id"]
+                if author_id not in author_dict:
+                    author_dict[author_id] = {
+                        "name": author["name"],
+                        "username": author["username"],
+                    }
 
         logger.info(f"Tweet count: {len(tweet_list)}")
 
@@ -147,14 +159,12 @@ def analyze_profile() -> None:
 
         # Most emotional tweets
         max_emotion_per_column = prediction_results[EMOTIONS].idxmax()
-        max_emotional_tweets = (
-            prediction_results.take(max_emotion_per_column.values.tolist())
-            .drop(EMOTIONS, axis=1)
-            .to_dict("records")
-        )
+        max_emotional_tweets = prediction_results.take(
+            max_emotion_per_column.values.tolist()
+        ).to_dict("records")
 
         # Fluctuation of your Twitter feed emotions over time
-        classified_tweets = prediction_results.drop(EMOTIONS, axis=1).to_dict("records")
+        classified_tweets = prediction_results.to_dict("records")
 
         # Consolidate all data and analysis
         analysis_result = {
@@ -162,5 +172,6 @@ def analyze_profile() -> None:
             "emotion_contributors": emotion_contributors,
             "max_emotional_tweets": max_emotional_tweets,
             "classified_tweets": classified_tweets,
+            "authors": author_dict,
         }
         _set_task_progress(100, analysis_result)
