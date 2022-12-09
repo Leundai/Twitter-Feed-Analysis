@@ -1,5 +1,5 @@
 import React from "react";
-import "./authPage.css";
+import "./AuthPage.css";
 
 import { useNavigate } from "react-router-dom";
 import { Typography, Button } from "@mui/material";
