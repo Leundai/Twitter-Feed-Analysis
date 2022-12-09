@@ -1,12 +1,14 @@
 import React from "react";
 import "./authPage.css";
 
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Typography, Button } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 function AuthPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="auth-container">
       <header className="auth-header">
@@ -23,8 +25,13 @@ function AuthPage() {
         </Button>
       </header>
       <div className="about-button">
-        <Button size="medium" color="info" endIcon={<ArrowForwardIcon />}>
-          <Link to="/about">How it works</Link>
+        <Button
+          size="medium"
+          color="info"
+          endIcon={<ArrowForwardIcon />}
+          onClick={() => navigate("/about")}
+        >
+          How it works
         </Button>
       </div>
     </div>

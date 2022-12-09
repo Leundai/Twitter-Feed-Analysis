@@ -14,6 +14,7 @@
     "@types/node": "^16.11.59",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.6",
+    "pretty-quick": "^3.1.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.5",
@@ -25,7 +26,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "pretty-quick --staged {src,test}/**/*.{ts,tsx,json,css}",
+    "format:all": "prettier --write {src,test}/**/*.{ts,tsx,json,css}",
+    "format:check": "prettier --list-different {src,test}/**/*.js"
   },
   "eslintConfig": {
     "extends": [
@@ -46,6 +50,6 @@
     ]
   },
   "devDependencies": {
-    "prettier": "2.8.1"
+    "prettier": "^2.8.1"
   }
 }
