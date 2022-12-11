@@ -1,13 +1,24 @@
-import React from "react";
+import { Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { TwitterTweetEmbed } from "react-twitter-embed";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
-import { EmotionContributors } from "../types/analysisInterface";
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
+import {
+  EmotionsContributors,
+  EmotionContributors,
+  ClassifiedTweets,
+  EmotionCount,
+  ClassifiedTweet,
+} from "../types/analysisInterface";
 
 import "./AnalysisContributors.css";
 
-type Props = {
-  emotionContributors: EmotionContributors;
-};
+interface FormattedAuthor {
+  tweetId: string;
+  pieData: {
+    name: string;
+    value: number;
+  }[];
+}
 
 const tweetOptions = {
   theme: "dark",
@@ -17,98 +28,143 @@ const tweetOptions = {
   width: 550,
 };
 
-const data01 = [
-  {
-    name: "Angry",
-    value: 400,
-  },
-  {
-    name: "Other",
-    value: 300,
-  },
-];
+const formatData = (
+  emotionContributors: EmotionContributors,
+  emotion: string,
+  classifiedTweets: ClassifiedTweets,
+  emotionCount: number
+): FormattedAuthor[] => {
+  const authorIds = emotionContributors.author_ids;
+  const formattedAuthors = authorIds.map((authorId) => {
+    const topTweet = Object.values(classifiedTweets)
+      .filter(
+        (tweet) => tweet.author_id === authorId && tweet.max_emotion === emotion
+      )
+      .sort(
+        (a, b) =>
+          Number(a[emotion as keyof ClassifiedTweet]) -
+          Number(b[emotion as keyof ClassifiedTweet])
+      )[0];
+    return {
+      tweetId: topTweet.tweet_id,
+      pieData: [
+        {
+          name: "Contributed",
+          value: emotionContributors.occurance,
+        },
+        {
+          name: "Total tweets of this emotion",
+          value: emotionCount,
+        },
+      ],
+    };
+  });
+  return formattedAuthors;
+};
 
-const colors = ["#29B6F6", "#29B6F6"];
+type Props = {
+  emotionsContributors: EmotionsContributors;
+  classifiedTweets: ClassifiedTweets;
+  emotionCount: EmotionCount;
+};
 
-function AnalysisContributors({ emotionContributors }: Props) {
+function AnalysisContributors({
+  emotionsContributors,
+  classifiedTweets,
+  emotionCount,
+}: Props) {
+  const [tableData, setTableData] = useState<FormattedAuthor[]>();
+  const [emotion, setEmotion] = useState<string>();
+  const [loadedTweets, setLoadedTweets] = useState<boolean[]>([
+    false,
+    false,
+    false,
+  ]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const maxEmotion = Object.keys(emotionsContributors).reduce(
+      (a: string, b: string) => {
+        const aKey = a as keyof EmotionsContributors;
+        const bKey = b as keyof EmotionsContributors;
+        return emotionsContributors[aKey].occurance >
+          emotionsContributors[bKey].occurance
+          ? a
+          : b;
+      }
+    );
+    setEmotion(maxEmotion);
+
+    setTableData(
+      formatData(
+        emotionsContributors[maxEmotion as keyof EmotionsContributors],
+        maxEmotion,
+        classifiedTweets,
+        emotionCount[maxEmotion as keyof EmotionCount]
+      )
+    );
+  }, [classifiedTweets, emotionCount, emotionsContributors]);
+
+  const formatTitle = () =>
+    tableData && (
+      <Typography color="white" variant="h4">
+        Top {tableData.length > 1 && tableData.length} Contributor
+        {tableData.length > 1 && "s"} of {emotion}
+      </Typography>
+    );
+
   return (
     <div className="contributor-container">
-      <div className="contributor-card">
-        <div className="tweet-card">
-          <TwitterTweetEmbed
-            tweetId="1600932268461391872"
-            options={tweetOptions}
-          />
-        </div>
-        <ResponsiveContainer width="40%" height={300} minWidth={300}>
-          <PieChart>
-            <Pie
-              data={data01}
-              nameKey="name"
-              dataKey="value"
-              cx="50%"
-              cy="50%"
-              innerRadius={50}
-              outerRadius={80}
-              paddingAngle={5}
-              label
-            >
-              {data01.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={index === 0 ? "#29B6F6" : "white"}
-                />
-              ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="contributor-card">
-        <div className="tweet-card">
-          <TwitterTweetEmbed
-            tweetId="1600914754460995584"
-            options={tweetOptions}
-          />
-        </div>
-        <ResponsiveContainer width="40%" height={300} minWidth={300}>
-          <PieChart>
-            <Pie
-              data={data01}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={80}
-              fill="#82ca9d"
-              label
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="contributor-card">
-        <div className="tweet-card">
-          <TwitterTweetEmbed
-            tweetId="1600917097927811072"
-            options={tweetOptions}
-          />
-        </div>
-        <ResponsiveContainer width="40%" height={300} minWidth={300}>
-          <PieChart>
-            <Pie
-              data={data01}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={80}
-              fill="#82ca9d"
-              label
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
+      {formatTitle()}
+      {tableData &&
+        tableData.map((authorData, index) => (
+          <div key={`card-${index}`} className="contributor-card">
+            <div className="tweet-card">
+              <TwitterTweetEmbed
+                tweetId={authorData.tweetId.toString()}
+                options={tweetOptions}
+                onLoad={(element) => {
+                  if (element) {
+                    setLoadedTweets((prevState: boolean[]): boolean[] => {
+                      const newLoaded = [...prevState];
+                      newLoaded[index] = true;
+                      return newLoaded;
+                    });
+                    setLoading(false);
+                  }
+                }}
+              />
+              {!loading && !loadedTweets[index] && (
+                <Typography color="white" variant="h4">
+                  Could Not Load Tweet 😭
+                </Typography>
+              )}
+            </div>
+            <ResponsiveContainer width="40%" height={300} minWidth={300}>
+              <PieChart>
+                <Legend verticalAlign="top" height={36} />
+                <Pie
+                  data={authorData.pieData}
+                  nameKey="name"
+                  dataKey="value"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={50}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  label
+                >
+                  {authorData.pieData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={index === 0 ? "#29B6F6" : "white"}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        ))}
     </div>
   );
 }

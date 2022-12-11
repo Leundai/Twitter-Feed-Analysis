@@ -2,6 +2,8 @@
   width: 80%;
   max-width: 900px;
   min-width: 300px;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 .contributor-card {

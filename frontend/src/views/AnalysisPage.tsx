@@ -15,7 +15,9 @@ function AnalysisPage() {
       <AnalysisHeader emotionCount={analysisResults.emotion_count} />
       <AnalysisHistogram emotionCount={analysisResults.emotion_count} />
       <AnalysisContributors
-        emotionContributors={analysisResults.emotion_contributors}
+        emotionsContributors={analysisResults.emotion_contributors}
+        classifiedTweets={analysisResults.classified_tweets}
+        emotionCount={analysisResults.emotion_count}
       />
     </div>
   );

@@ -131,7 +131,7 @@ def analyze_profile() -> None:
         tweet_metadata = ["tweet_id", "author_id"]
         prediction_results[EMOTIONS] = prediction_results[EMOTIONS].astype(float)
         prediction_results[tweet_metadata] = prediction_results[tweet_metadata].astype(
-            int
+            str
         )
         prediction_results["created_at"] = prediction_results["created_at"].astype(str)
 
