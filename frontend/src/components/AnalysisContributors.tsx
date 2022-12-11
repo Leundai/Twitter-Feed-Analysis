@@ -134,7 +134,7 @@ function AnalysisContributors({
                   setLoading(false);
                 }}
               />
-              {!loading && true && (
+              {!loading && !loadedTweets[index] && (
                 <Typography color="white" variant="h4">
                   Could Not Load The Tweet 😭
                   <TwitterMentionButton
