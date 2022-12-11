@@ -11,6 +11,7 @@ import {
 } from "../types/analysisInterface";
 
 import "./AnalysisContributors.css";
+import { maxEmotion } from "./AnalysisHeader";
 
 interface FormattedAuthor {
   tweetId: string;
@@ -34,31 +35,34 @@ const formatData = (
   classifiedTweets: ClassifiedTweets,
   emotionCount: number
 ): FormattedAuthor[] => {
-  const authorIds = emotionContributors.author_ids;
-  const formattedAuthors = authorIds.map((authorId) => {
-    const topTweet = Object.values(classifiedTweets)
-      .filter(
-        (tweet) => tweet.author_id === authorId && tweet.max_emotion === emotion
-      )
-      .sort(
-        (a, b) =>
-          Number(a[emotion as keyof ClassifiedTweet]) -
-          Number(b[emotion as keyof ClassifiedTweet])
-      )[0];
-    return {
-      tweetId: topTweet.tweet_id,
-      pieData: [
-        {
-          name: "Contributed",
-          value: emotionContributors.occurance,
-        },
-        {
-          name: "Total tweets of this emotion",
-          value: emotionCount,
-        },
-      ],
-    };
-  });
+  const authors = emotionContributors;
+  const formattedAuthors = Object.keys(authors)
+    .sort((a, b) => emotionContributors[b] - emotionContributors[a])
+    .map((authorId) => {
+      const topTweet = Object.values(classifiedTweets)
+        .filter(
+          (tweet) =>
+            tweet.author_id === authorId && tweet.max_emotion === emotion
+        )
+        .sort(
+          (a, b) =>
+            Number(a[emotion as keyof ClassifiedTweet]) -
+            Number(b[emotion as keyof ClassifiedTweet])
+        )[0];
+      return {
+        tweetId: topTweet.tweet_id,
+        pieData: [
+          {
+            name: "Contributed",
+            value: emotionContributors[authorId as keyof EmotionContributors],
+          },
+          {
+            name: "Total tweets of this emotion",
+            value: emotionCount,
+          },
+        ],
+      };
+    });
   return formattedAuthors;
 };
 
@@ -83,24 +87,15 @@ function AnalysisContributors({
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const maxEmotion = Object.keys(emotionsContributors).reduce(
-      (a: string, b: string) => {
-        const aKey = a as keyof EmotionsContributors;
-        const bKey = b as keyof EmotionsContributors;
-        return emotionsContributors[aKey].occurance >
-          emotionsContributors[bKey].occurance
-          ? a
-          : b;
-      }
-    );
-    setEmotion(maxEmotion);
+    const newEmotion = maxEmotion(emotionCount);
+    setEmotion(newEmotion);
 
     setTableData(
       formatData(
-        emotionsContributors[maxEmotion as keyof EmotionsContributors],
-        maxEmotion,
+        emotionsContributors[newEmotion as keyof EmotionsContributors],
+        newEmotion,
         classifiedTweets,
-        emotionCount[maxEmotion as keyof EmotionCount]
+        emotionCount[newEmotion as keyof EmotionCount]
       )
     );
   }, [classifiedTweets, emotionCount, emotionsContributors]);

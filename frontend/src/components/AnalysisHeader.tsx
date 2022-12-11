@@ -7,7 +7,7 @@ type Props = {
   emotionCount: EmotionCount;
 };
 
-const maxEmotion = (emotionCount: EmotionCount): string =>
+export const maxEmotion = (emotionCount: EmotionCount): string =>
   Object.keys(emotionCount).reduce((a: string, b: string) => {
     const aKey = a as EmotionKey;
     const bKey = b as EmotionKey;
@@ -31,7 +31,7 @@ const emotionShare = (
 
 // TODO: Handle the case with ties
 function AnalysisHeader({ emotionCount }: Props) {
-  const [emotion, setEmotion] = useState("😐");
+  const [emotion, setEmotion] = useState("neutral");
 
   useEffect(() => {
     setEmotion(maxEmotion(emotionCount));

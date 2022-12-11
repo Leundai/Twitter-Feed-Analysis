@@ -12,8 +12,7 @@ export type EmotionKey = keyof EmotionCount;
 
 // TODO: Change author_ids to camelCase
 export interface EmotionContributors {
-  author_ids: Array<string>;
-  occurance: number;
+  [authorId: string]: number;
 }
 
 export interface EmotionsContributors {
