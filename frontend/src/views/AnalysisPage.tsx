@@ -2,6 +2,7 @@ import React from "react";
 import AnalysisHeader from "../components/AnalysisHeader";
 import AnalysisHistogram from "../components/AnalysisHistogram";
 import AnalysisContributors from "../components/AnalysisContributors";
+import AnalysisTopTweets from "../components/AnalysisTopTweets";
 
 import "./AnalysisPage.css";
 
@@ -19,6 +20,9 @@ function AnalysisPage() {
         classifiedTweets={analysisResults.classified_tweets}
         emotionCount={analysisResults.emotion_count}
         authorsInfo={analysisResults.authors}
+      />
+      <AnalysisTopTweets
+        topEmotionalTweets={analysisResults.max_emotional_tweets}
       />
     </div>
   );

@@ -1,0 +1,39 @@
+.top-tweets-container {
+  width: 85%;
+  min-width: 300px;
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
+.top-tweet-cards {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.top-tweet-card {
+  width: 40%;
+  min-height: 200px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.top-tweet-unavailable {
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 900px) {
+  .top-tweet-cards {
+    flex-direction: column;
+  }
+  .top-tweet-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}

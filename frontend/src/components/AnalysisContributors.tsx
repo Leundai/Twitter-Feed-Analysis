@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { TwitterMentionButton, TwitterTweetEmbed } from "react-twitter-embed";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
@@ -123,6 +123,7 @@ function AnalysisContributors({
               <TwitterTweetEmbed
                 tweetId={authorData.tweetId}
                 options={tweetOptions}
+                placeholder={<CircularProgress />}
                 onLoad={(element) => {
                   if (element !== undefined) {
                     setLoadedTweets((prevState: boolean[]): boolean[] => {
