@@ -26,17 +26,16 @@ const formatData = (emotionCount: EmotionCount) => {
 
 function AnalysisHistogram({ emotionCount }: Props) {
   return (
-    <ResponsiveContainer width={"80%"} height={200} minWidth={200}>
+    <ResponsiveContainer width={"70%"} height={240} minWidth={370}>
       <BarChart margin={{ top: 30 }} data={formatData(emotionCount)}>
         <XAxis dataKey="emotion" fontSize={12} stroke="white" />
         <Bar
           dataKey="count"
           fill="#FFF"
-          label={{ fill: "white", fontSize: 12, position: "top" }}
-          minPointSize={20}
+          label={{ fill: "white", fontSize: "1em", position: "top" }}
         >
           {formatData(emotionCount).map((entry, index) => (
-            <Cell fill={barColors[index]} />
+            <Cell key={`cell-${index}`} fill={barColors[index]} />
           ))}
         </Bar>
       </BarChart>

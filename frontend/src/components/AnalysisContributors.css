@@ -1,0 +1,35 @@
+.contributor-container {
+  width: 80%;
+  max-width: 900px;
+  min-width: 300px;
+}
+
+.contributor-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
+.tweet-card {
+  align-items: center;
+  width: 70%;
+}
+
+@media (max-width: 900px) {
+  .tweet-card {
+    width: 50%;
+  }
+}
+
+@media (max-width: 745px) {
+  .contributor-card {
+    flex-direction: column;
+  }
+  .tweet-card {
+    width: 80%;
+    min-width: 300px;
+  }
+}
