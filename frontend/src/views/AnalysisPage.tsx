@@ -18,6 +18,7 @@ function AnalysisPage() {
         emotionsContributors={analysisResults.emotion_contributors}
         classifiedTweets={analysisResults.classified_tweets}
         emotionCount={analysisResults.emotion_count}
+        authorsInfo={analysisResults.authors}
       />
     </div>
   );

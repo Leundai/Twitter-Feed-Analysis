@@ -41,3 +41,10 @@ export interface ClassifiedTweet {
 }
 
 export type ClassifiedTweets = Array<ClassifiedTweet>;
+
+export interface AuthorsInfo {
+  [authorId: string]: {
+    name: string;
+    username: string;
+  };
+}

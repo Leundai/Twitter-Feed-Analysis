@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { TwitterTweetEmbed } from "react-twitter-embed";
+import { TwitterMentionButton, TwitterTweetEmbed } from "react-twitter-embed";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 import {
   EmotionsContributors,
@@ -8,6 +8,7 @@ import {
   ClassifiedTweets,
   EmotionCount,
   ClassifiedTweet,
+  AuthorsInfo,
 } from "../types/analysisInterface";
 
 import "./AnalysisContributors.css";
@@ -15,6 +16,7 @@ import { maxEmotion } from "./AnalysisHeader";
 
 interface FormattedAuthor {
   tweetId: string;
+  authorId: string;
   pieData: {
     name: string;
     value: number;
@@ -28,6 +30,8 @@ const tweetOptions = {
   cards: "hidden",
   width: 550,
 };
+
+const MAX_TWEET_DISPLAY = 3;
 
 const formatData = (
   emotionContributors: EmotionContributors,
@@ -51,6 +55,7 @@ const formatData = (
         )[0];
       return {
         tweetId: topTweet.tweet_id,
+        authorId: authorId,
         pieData: [
           {
             name: "Contributed",
@@ -70,20 +75,20 @@ type Props = {
   emotionsContributors: EmotionsContributors;
   classifiedTweets: ClassifiedTweets;
   emotionCount: EmotionCount;
+  authorsInfo: AuthorsInfo;
 };
 
 function AnalysisContributors({
   emotionsContributors,
   classifiedTweets,
   emotionCount,
+  authorsInfo,
 }: Props) {
   const [tableData, setTableData] = useState<FormattedAuthor[]>();
   const [emotion, setEmotion] = useState<string>();
-  const [loadedTweets, setLoadedTweets] = useState<boolean[]>([
-    false,
-    false,
-    false,
-  ]);
+  const [loadedTweets, setLoadedTweets] = useState<boolean[]>(
+    Array(MAX_TWEET_DISPLAY).fill(false)
+  );
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -116,22 +121,26 @@ function AnalysisContributors({
           <div key={`card-${index}`} className="contributor-card">
             <div className="tweet-card">
               <TwitterTweetEmbed
-                tweetId={authorData.tweetId.toString()}
+                tweetId={authorData.tweetId}
                 options={tweetOptions}
                 onLoad={(element) => {
-                  if (element) {
+                  if (element !== undefined) {
                     setLoadedTweets((prevState: boolean[]): boolean[] => {
                       const newLoaded = [...prevState];
                       newLoaded[index] = true;
                       return newLoaded;
                     });
-                    setLoading(false);
                   }
+                  setLoading(false);
                 }}
               />
-              {!loading && !loadedTweets[index] && (
+              {!loading && true && (
                 <Typography color="white" variant="h4">
-                  Could Not Load Tweet 😭
+                  Could Not Load The Tweet 😭
+                  <TwitterMentionButton
+                    screenName={authorsInfo[authorData.authorId].username}
+                    options={{ size: "large" }}
+                  />
                 </Typography>
               )}
             </div>
