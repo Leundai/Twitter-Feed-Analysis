@@ -148,14 +148,11 @@ def analyze_profile() -> None:
                 prediction_results["max_emotion"] == emotion
             ]
             author_occurance = filtered_results.value_counts(subset=["author_id"])
-            max_occurance = author_occurance.max()
-            max_authors = author_occurance[
-                author_occurance == max_occurance
-            ].index.tolist()
-            emotion_contributors[emotion] = {
-                "occurance": max_occurance,
-                "author_ids": [x[0] for x in max_authors],
-            }
+            max_authors = author_occurance.sort_values(ascending=False)[:3].to_dict()
+            res_dict = dict()
+            for key, value in max_authors.items():
+                res_dict[key[0]] = value
+            emotion_contributors[emotion] = res_dict
 
         # Most emotional tweets
         max_emotion_per_column = prediction_results[EMOTIONS].idxmax()
