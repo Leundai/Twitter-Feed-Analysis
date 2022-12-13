@@ -7,6 +7,7 @@ import AnalysisTopTweets from "../components/AnalysisTopTweets";
 import "./AnalysisPage.css";
 
 import dummyData from "../dummyData.json";
+import AnalysisWeek from "../components/AnalysisWeek";
 
 const analysisResults = dummyData.result.result;
 
@@ -24,6 +25,7 @@ function AnalysisPage() {
       <AnalysisTopTweets
         topEmotionalTweets={analysisResults.max_emotional_tweets}
       />
+      <AnalysisWeek weekResults={analysisResults.week_results} />
     </div>
   );
 }

@@ -48,3 +48,14 @@ export interface AuthorsInfo {
     username: string;
   };
 }
+
+export interface WeekResults {
+  date: string;
+  anger: number;
+  disgust: number;
+  fear: number;
+  joy: number;
+  neutral: number;
+  sadness: number;
+  surprise: number;
+}
