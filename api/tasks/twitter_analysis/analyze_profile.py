@@ -133,15 +133,42 @@ def analyze_profile() -> None:
         prediction_results[tweet_metadata] = prediction_results[tweet_metadata].astype(
             str
         )
-        prediction_results["created_at"] = prediction_results["created_at"].astype(str)
+        prediction_results["created_at"] = pd.to_datetime(
+            prediction_results["created_at"]
+        ).dt.date
 
         # Display overall emotion of the home feed
         # Including breakdown of each emotion
         max_emotion_per_row = prediction_results[EMOTIONS].idxmax(axis=1)
-        emotion_count = max_emotion_per_row.value_counts().to_dict()
+        prediction_results["max_emotion"] = max_emotion_per_row
+
+        # Format data into buckets of 24 hours
+        week_results = []
+        current_time = datetime.now()
+        for _ in range(7):
+            prev_time = current_time - timedelta(hours=24)
+            current_table = prediction_results[
+                prediction_results["created_at"] < current_time.date()
+            ]
+            current_table = current_table[
+                current_table["created_at"] >= prev_time.date()
+            ]
+            current_table[EMOTIONS] = current_table[EMOTIONS].astype(float)
+            max_emotions_by_day = current_table[EMOTIONS].idxmax(axis=1)
+            max_emotions_dict = max_emotions_by_day.value_counts().to_dict()
+
+            new_entry = {"date": prev_time.strftime("%m/%d"), **max_emotions_dict}
+
+            for emotion in EMOTIONS:
+                if emotion not in new_entry:
+                    new_entry[emotion] = 0
+
+            week_results.append(new_entry)
+            current_time -= timedelta(hours=24)
+
+        prediction_results["created_at"] = prediction_results["created_at"].astype(str)
 
         # Largest feed contributors to each emotion
-        prediction_results["max_emotion"] = max_emotion_per_row
         emotion_contributors = dict()
         for emotion in EMOTIONS:
             filtered_results = prediction_results[
@@ -163,6 +190,9 @@ def analyze_profile() -> None:
         # Fluctuation of your Twitter feed emotions over time
         classified_tweets = prediction_results.to_dict("records")
 
+        # Emotion Count to dict
+        emotion_count = max_emotion_per_row.value_counts().to_dict()
+
         # Consolidate all data and analysis
         analysis_result = {
             "emotion_count": emotion_count,
@@ -170,5 +200,6 @@ def analyze_profile() -> None:
             "max_emotional_tweets": max_emotional_tweets,
             "classified_tweets": classified_tweets,
             "authors": author_dict,
+            "week_results": week_results,
         }
         _set_task_progress(100, analysis_result)
