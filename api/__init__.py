@@ -22,10 +22,10 @@ from logging.handlers import RotatingFileHandler
 db = MongoEngine()
 migrate = Migrate()
 jwt = JWTManager()
-cors = CORS()
+cors = CORS(support_credentials=True)
 limiter = Limiter(
     key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"],
+    default_limits=None,  # ["200 per day", "50 per hour"],
     storage_uri=os.environ.get("REDIS_URL"),
     strategy="fixed-window",
 )
