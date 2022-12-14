@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Typography, Button } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useLocalStorage } from "hooks/useLocalStorage";
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -19,6 +19,7 @@ function AuthPage() {
     if (analysis) {
       navigate("/analysis");
     }
+    // eslint-disable-next-line
   }, []);
 
   return (

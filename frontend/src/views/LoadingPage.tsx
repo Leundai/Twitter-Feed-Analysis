@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CircularProgress, Typography } from "@mui/material";
 
 import "./LoadingPage.css";
-import CircularProgressWithLabel from "../components/CircularProgressWithLabel";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import CircularProgressWithLabel from "components/CircularProgressWithLabel";
+import { useLocalStorage } from "hooks/useLocalStorage";
 
 function LoadingPage() {
   const [analysis, setAnalysis] = useLocalStorage("analysis", undefined);
@@ -82,6 +82,7 @@ function LoadingPage() {
       .catch((error) => {
         console.error(error);
       });
+    // eslint-disable-next-line
   }, []);
 
   return (

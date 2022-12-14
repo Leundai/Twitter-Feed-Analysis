@@ -1,10 +1,10 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import AuthPage from "./views/AuthPage";
-import AboutPage from "./views/AboutPage";
-import Layout from "./views/Layout";
-import LoadingPage from "./views/LoadingPage";
-import AnalysisPage from "./views/AnalysisPage";
+import AuthPage from "views/AuthPage";
+import AboutPage from "views/AboutPage";
+import Layout from "views/Layout";
+import LoadingPage from "views/LoadingPage";
+import AnalysisPage from "views/AnalysisPage";
 
 function App() {
   return (

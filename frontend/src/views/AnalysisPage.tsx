@@ -1,15 +1,13 @@
 import React from "react";
-import AnalysisHeader from "../components/AnalysisHeader";
-import AnalysisHistogram from "../components/AnalysisHistogram";
-import AnalysisContributors from "../components/AnalysisContributors";
-import AnalysisTopTweets from "../components/AnalysisTopTweets";
+import AnalysisHeader from "components/AnalysisHeader";
+import AnalysisHistogram from "components/AnalysisHistogram";
+import AnalysisContributors from "components/AnalysisContributors";
+import AnalysisTopTweets from "components/AnalysisTopTweets";
 
 import "./AnalysisPage.css";
 
-import AnalysisWeek from "../components/AnalysisWeek";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import AnalysisWeek from "components/AnalysisWeek";
+import { useLocalStorage } from "hooks/useLocalStorage";
 
 function AnalysisPage() {
   const [analysis, setAnalysis] = useLocalStorage("analysis", undefined);
