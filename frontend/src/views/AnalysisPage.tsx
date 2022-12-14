@@ -8,6 +8,8 @@ import "./AnalysisPage.css";
 
 import AnalysisWeek from "../components/AnalysisWeek";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function AnalysisPage() {
   const [analysis, setAnalysis] = useLocalStorage("analysis", undefined);
