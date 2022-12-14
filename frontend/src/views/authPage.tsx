@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./AuthPage.css";
 
 import { useNavigate } from "react-router-dom";
 import { Typography, Button } from "@mui/material";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 function AuthPage() {
   const navigate = useNavigate();
+  const [analysis, setAnalysis] = useLocalStorage("analysis", undefined);
+
+  const login = () => {
+    window.open("http://127.0.0.1:5000/api/auth/login", "_self");
+  };
+
+  useEffect(() => {
+    if (analysis) {
+      navigate("/analysis");
+    }
+  }, []);
 
   return (
     <div className="auth-container">
@@ -20,7 +32,7 @@ function AuthPage() {
           variant="outlined"
           color="info"
           startIcon={<TwitterIcon />}
-          onClick={() => navigate("/loading")}
+          onClick={() => login()}
         >
           Login with twitter
         </Button>

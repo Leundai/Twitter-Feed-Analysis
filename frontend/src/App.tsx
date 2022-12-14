@@ -12,7 +12,13 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<AuthPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/loading" element={<LoadingPage />} />
+        <Route
+          path="/loading/:userId"
+          element={<LoadingPage />}
+          loader={({ params }) => {
+            console.log(params.userId); // "hotspur"
+          }}
+        />
         <Route path="/analysis" element={<AnalysisPage />} />
       </Route>
     </Routes>

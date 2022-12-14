@@ -6,26 +6,24 @@ import AnalysisTopTweets from "../components/AnalysisTopTweets";
 
 import "./AnalysisPage.css";
 
-import dummyData from "../dummyData.json";
 import AnalysisWeek from "../components/AnalysisWeek";
-
-const analysisResults = dummyData.result.result;
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 function AnalysisPage() {
+  const [analysis, setAnalysis] = useLocalStorage("analysis", undefined);
+
   return (
     <div className="analysis-container">
-      <AnalysisHeader emotionCount={analysisResults.emotion_count} />
-      <AnalysisHistogram emotionCount={analysisResults.emotion_count} />
+      <AnalysisHeader emotionCount={analysis.emotion_count} />
+      <AnalysisHistogram emotionCount={analysis.emotion_count} />
       <AnalysisContributors
-        emotionsContributors={analysisResults.emotion_contributors}
-        classifiedTweets={analysisResults.classified_tweets}
-        emotionCount={analysisResults.emotion_count}
-        authorsInfo={analysisResults.authors}
+        emotionsContributors={analysis.emotion_contributors}
+        classifiedTweets={analysis.classified_tweets}
+        emotionCount={analysis.emotion_count}
+        authorsInfo={analysis.authors}
       />
-      <AnalysisTopTweets
-        topEmotionalTweets={analysisResults.max_emotional_tweets}
-      />
-      <AnalysisWeek weekResults={analysisResults.week_results} />
+      <AnalysisTopTweets topEmotionalTweets={analysis.max_emotional_tweets} />
+      <AnalysisWeek weekResults={analysis.week_results} />
     </div>
   );
 }

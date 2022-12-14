@@ -1,4 +1,5 @@
-from flask import current_app, request, url_for
+from flask import current_app, jsonify, url_for, redirect
+from flask_cors import cross_origin, CORS
 from uuid import uuid4
 from api import oauth
 from api.views.auth import bp
@@ -14,6 +15,7 @@ def handle_error(error):
 
 
 @bp.route("/login")
+@cross_origin(supports_credentials=True)
 def login():
     redirect_uri = url_for("auth.access_token", _external=True)
     logger.info(redirect_uri)
@@ -21,18 +23,27 @@ def login():
 
 
 @bp.route("/access_token")
+@cross_origin(supports_credentials=True)
 def access_token():
     token = oauth.twitter.authorize_access_token()
 
-    new_profile = TaskProfile()
-    new_profile.access_token = token.get("oauth_token", "")
-    new_profile.access_secret = token.get("oauth_token_secret", "")
-    new_profile.user_id = token.get("user_id", "")
-    new_profile.save()
+    create_task = False
+    try:
+        task: TaskProfile = TaskProfile.objects.get(user_id=token.get("user_id", ""))
+    except Exception as e:
+        logger.error(e)
+        create_task = True
 
-    return create_response(
-        message="Redirected and got access tokens",
-        data={"user_id": token.get("user_id", "")},
+    if create_task:
+        new_task = TaskProfile()
+        new_task.access_token = token.get("oauth_token", "")
+        new_task.access_secret = token.get("oauth_token_secret", "")
+        new_task.user_id = token.get("user_id", "")
+        new_task.save()
+
+    return redirect(
+        f"http://localhost:3000/loading/{token.get('user_id', '')}",
+        code=302,
     )
 
 
