@@ -8,6 +8,7 @@ import concurrent.futures
 from datetime import datetime, timedelta
 import pandas as pd
 import pprint
+import tweepy
 
 pp = pprint.PrettyPrinter()
 
@@ -47,12 +48,23 @@ def classify_tweet(args: tuple) -> pd.Series:
     return pd.Series(result)
 
 
-def analyze_profile() -> None:
+def analyze_profile(credentials) -> None:
     """
     A background task that uses Twitter API and runs emotion detection on all collected tweets
     """
+    access_token, access_secret = credentials
+
     with app.app_context():
-        twitter_client: Client = app.config["TWITTER_CLIENT"]
+        # Setup Twitter API
+        twitter_auth = {
+            "consumer_key": app.config.get("TWITTER_API_KEY"),
+            "consumer_secret": app.config.get("TWITTER_API_SECRET"),
+            "access_token": access_token,
+            "access_token_secret": access_secret
+            # Add access keys here
+        }
+
+        twitter_client: Client = tweepy.Client(**twitter_auth)
         res = twitter_client.get_me()
         user = res.data
         logger.info(f"Twitter User ID: {user.id}")

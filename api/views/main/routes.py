@@ -1,4 +1,3 @@
-from uuid import uuid4
 from flask import current_app, request
 from api.views.main import bp
 from api.utils.scripts import NpEncoder
@@ -10,15 +9,24 @@ import json
 # with oauth
 @bp.route("/analyze", methods=["GET"])
 def start_analyzing():
-    new_profile = TaskProfile()
-    rq_job = current_app.task_queue.enqueue(
-        "api.tasks.twitter_analysis.analyze_profile.analyze_profile"
-    )
-    new_profile.task_id = rq_job.get_id()
-    logger.info(new_profile.task_id)
-    new_profile.save()
+    req_body = request.json
+    user_id = req_body.get("user_id", None)
 
-    return create_response(data={"request_id": rq_job.get_id()})
+    try:
+        task: TaskProfile = TaskProfile.objects.get(user_id=user_id)
+    except Exception as e:
+        logger.error(e)
+        return create_response(status=500, message="Task doesn't exist or has expired")
+
+    rq_job = current_app.task_queue.enqueue(
+        "api.tasks.twitter_analysis.analyze_profile.analyze_profile",
+        (task.access_token, task.access_secret),
+    )
+    task.task_id = rq_job.get_id()
+    logger.info(task.task_id)
+    task.save()
+
+    return create_response(data={"request_id": task.task_id})
 
 
 @bp.route("/analysis_status", methods=["GET"])

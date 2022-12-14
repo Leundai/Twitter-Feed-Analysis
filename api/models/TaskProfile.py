@@ -11,7 +11,9 @@ class TaskProfile(Document):
     """User Profile Collection."""
 
     task_id = StringField()
-    name = StringField()
+    access_token = StringField()
+    access_secret = StringField()
+    user_id = StringField()
     result = StringField()
     complete = BooleanField(default=False)
 

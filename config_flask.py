@@ -35,3 +35,5 @@ class Config(object):
     TWITTER_ACCESS_TOKEN = os.environ.get("TWITTER_ACCESS_TOKEN")
     TWITTER_ACCESS_SECRET = os.environ.get("TWITTER_ACCESS_SECRET")
     TWITTER_BEARER = os.environ.get("TWITTER_BEARER")
+
+    secret_key = os.environ.get("AUTHLIB_SECRET_KEY")
