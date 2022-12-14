@@ -28,12 +28,11 @@ function LoadingPage() {
         throw new Error("failed to authenticate user");
       })
       .then((result) => {
-        console.log("Success:", result);
         setAnalysis(result.result.data);
         navigate("/analysis");
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
 
     // Ignoring navigate as deps
@@ -54,11 +53,10 @@ function LoadingPage() {
           throw new Error("failed to get task progress");
         })
         .then((result) => {
-          console.log("Success:", result);
           setProgress(result.result.progress);
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
     }, 1000);
 
@@ -79,11 +77,10 @@ function LoadingPage() {
         throw new Error("failed to authenticate user");
       })
       .then((result) => {
-        console.log("Success:", result);
         setTaskId(result.result.taskId);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }, []);
 
