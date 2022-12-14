@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 
 import "./LoadingPage.css";
 import CircularProgressWithLabel from "../components/CircularProgressWithLabel";
@@ -89,12 +89,16 @@ function LoadingPage() {
       <Typography variant="h4" color="white" marginBottom=".5em">
         Analyzing your Twitter feed
       </Typography>
-      <CircularProgressWithLabel
-        variant="determinate"
-        value={progress}
-        color="info"
-        size="4em"
-      />
+      {progress === 0 ? (
+        <CircularProgress color="info" size="4em" />
+      ) : (
+        <CircularProgressWithLabel
+          variant="determinate"
+          value={progress}
+          color="info"
+          size="4em"
+        />
+      )}
     </div>
   );
 }
