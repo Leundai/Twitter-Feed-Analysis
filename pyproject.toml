@@ -21,9 +21,9 @@ python-dotenv = "^0.21.0"
 tweepy = "^4.12.1"
 transformers = "^4.25.1"
 datasets = "^2.7.1"
-torch = "~1.12.1"
 loginpass = "^0.5"
 gunicorn = "^20.1.0"
+torch = {url = "https://download.pytorch.org/whl/cpu/torch-1.12.1%2Bcpu-cp310-cp310-linux_x86_64.whl"}
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.15.5"
