@@ -1,2 +1,2 @@
-worker: python3 backend/worker.py
-web: gunicorn backend/app:app
+worker: python3 worker.py
+web: gunicorn app:app
