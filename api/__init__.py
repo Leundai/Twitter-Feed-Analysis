@@ -58,7 +58,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
     app.secret_key = "POTATOES"
     app.redis = Redis.from_url(app.config.get("REDIS_URL", "redis://"))
-    app.task_queue = rq.Queue("flask-api-queue", connection=app.redis)
+    app.task_queue = rq.Queue(connection=app.redis)
     oauth.register(
         name="twitter",
         client_id=app.config.get("TWITTER_API_KEY"),

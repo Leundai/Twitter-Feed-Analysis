@@ -1,3 +1,4 @@
+from api.utils.constants import CLIENT_URL
 from flask import current_app, jsonify, url_for, redirect
 from flask_cors import cross_origin, CORS
 from uuid import uuid4
@@ -42,7 +43,7 @@ def access_token():
         new_task.save()
 
     return redirect(
-        f"http://localhost:3000/loading/{token.get('user_id', '')}",
+        CLIENT_URL + f"/loading/{token.get('user_id', '')}",
         code=302,
     )
 
